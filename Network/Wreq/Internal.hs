@@ -177,7 +177,7 @@ runReadHistory (Req mgr req) = runHistory mgr readHistoriedResponse req
 
 preparePost :: Postable a => Options -> String -> a -> IO Req
 preparePost opts url payload = Req (manager opts) <$>
-  prepare (postPayload payload . (Lens.method .~ HTTP.methodPost)) opts url
+  prepare (fmap (Lens.method .~ HTTP.methodPost) . postPayload payload) opts url
 
 prepareMethod :: HTTP.Method -> Options -> String -> IO Req
 prepareMethod method opts url = Req (manager opts) <$>
@@ -186,7 +186,7 @@ prepareMethod method opts url = Req (manager opts) <$>
 preparePayloadMethod :: Postable a => HTTP.Method -> Options -> String -> a
                         -> IO Req
 preparePayloadMethod method opts url payload = Req (manager opts) <$>
-  prepare (postPayload payload . (Lens.method .~ method)) opts url
+  prepare (fmap (Lens.method .~ method) . postPayload payload) opts url
 
 prepareHead :: Options -> String -> IO Req
 prepareHead = prepareMethod HTTP.methodHead
@@ -199,7 +199,7 @@ prepareOptions = prepareMethod HTTP.methodOptions
 
 preparePut :: Putable a => Options -> String -> a -> IO Req
 preparePut opts url payload = Req (manager opts) <$>
-  prepare (putPayload payload . (Lens.method .~ HTTP.methodPut)) opts url
+  prepare (fmap (Lens.method .~ HTTP.methodPut) . putPayload payload) opts url
 
 prepareDelete :: Options -> String -> IO Req
 prepareDelete = prepareMethod HTTP.methodDelete
